@@ -38,7 +38,7 @@ class DropBoxController {
           }
         }
 
-        ajax.onerror = evento => {
+        ajax.onerror = event => {
           reject(event);
         }
 
