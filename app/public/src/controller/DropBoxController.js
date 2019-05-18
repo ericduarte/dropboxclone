@@ -7,10 +7,11 @@ class DropBoxController {
       this.progressBarEl = this.snackModalEl.querySelector('.mc-progress-bar-fg');
       this.namefileEl = this.snackModalEl.querySelector('.filename');
       this.timeLeftEl = this.snackModalEl.querySelector('.timeleft');
+      this.listFilesEl = document.querySelector('#list-of-files-and-directories');
 
       this.connectFirebase();
       this.initEvents()    
-    
+      this.readFiles();
   }
 
   connectFirebase(){
@@ -144,12 +145,11 @@ class DropBoxController {
 
     return '';
   }
-  
-  getFileView(file){
+
+  getFileIconView(file){    
     switch(file.type){
       case 'folder':
-      return 
-      `
+      return `
         <svg width="160" height="160" viewBox="0 0 160 160" class="mc-icon-template-content tile__preview tile__preview--icon">
             <title>content-folder-large</title>
             <g fill="none" fill-rule="evenodd">
@@ -160,8 +160,7 @@ class DropBoxController {
       `
       break;
       case 'video/mp4':
-      return
-      `   
+      return `   
         <svg width="160" height="160" viewBox="0 0 160 160" class="mc-icon-template-content tile__preview tile__preview--icon">
             <title>content-video-large</title>
             <defs>
@@ -182,8 +181,8 @@ class DropBoxController {
       `
       break;
       case 'audio/mp3':      
-      return
-      ` <svg width="160" height="160" viewBox="0 0 160 160" class="mc-icon-template-content tile__preview tile__preview--icon">
+      return` 
+        <svg width="160" height="160" viewBox="0 0 160 160" class="mc-icon-template-content tile__preview tile__preview--icon">
             <title>content-audio-large</title>
             <defs>
                 <rect id="mc-content-audio-large-b" x="30" y="43" width="100" height="74" rx="4"></rect>
@@ -203,9 +202,8 @@ class DropBoxController {
       `
       break;
 
-      case 'application/pdf':
-      return
-      `
+      case 'application/pdf':      
+      return `
         <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="160px" height="160px" viewBox="0 0 160 160" enable-background="new 0 0 160 160" xml:space="preserve">
           <filter height="102%" width="101.4%" id="mc-content-unknown-large-a" filterUnits="objectBoundingBox" y="-.5%" x="-.7%">
               <feOffset result="shadowOffsetOuter1" in="SourceAlpha" dy="1"></feOffset>
@@ -244,8 +242,8 @@ class DropBoxController {
       case 'image/jpg':
       case 'image/png':
       case 'image/gif':
-      return
-         `<svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="160px" height="160px" viewBox="0 0 160 160" enable-background="new 0 0 160 160" xml:space="preserve">
+      return `
+          <svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="160px" height="160px" viewBox="0 0 160 160" enable-background="new 0 0 160 160" xml:space="preserve">
               <filter height="102%" width="101.4%" id="mc-content-unknown-large-a" filterUnits="objectBoundingBox" y="-.5%" x="-.7%">
                   <feOffset result="shadowOffsetOuter1" in="SourceAlpha" dy="1"></feOffset>
                   <feColorMatrix values="0 0 0 0 0.858823529 0 0 0 0 0.870588235 0 0 0 0 0.88627451 0 0 0 1 0" in="shadowOffsetOuter1">
@@ -284,37 +282,51 @@ class DropBoxController {
               </g>
           </svg>
         `
-        break;
+      break;
       default:
       return `
-        <svg width="160" height="160" viewBox="0 0 160 160" class="mc-icon-template-content tile__preview tile__preview--icon">
-            <title>1357054_617b.jpg</title>
-            <defs>
-                <rect id="mc-content-unknown-large-b" x="43" y="30" width="74" height="100" rx="4"></rect>
-                <filter x="-.7%" y="-.5%" width="101.4%" height="102%" filterUnits="objectBoundingBox" id="mc-content-unknown-large-a">
-                    <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-                    <feColorMatrix values="0 0 0 0 0.858823529 0 0 0 0 0.870588235 0 0 0 0 0.88627451 0 0 0 1 0" in="shadowOffsetOuter1"></feColorMatrix>
-                </filter>
-            </defs>
-            <g fill="none" fill-rule="evenodd">
-                <g>
-                    <use fill="#000" filter="url(#mc-content-unknown-large-a)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mc-content-unknown-large-b"></use>
-                    <use fill="#F7F9FA" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mc-content-unknown-large-b"></use>
-                </g>
-            </g>
-        </svg>
-      `
-
-      
+          <svg width="160" height="160" viewBox="0 0 160 160" class="mc-icon-template-content tile__preview tile__preview--icon">
+              <title>1357054_617b.jpg</title>
+              <defs>
+                  <rect id="mc-content-unknown-large-b" x="43" y="30" width="74" height="100" rx="4"></rect>
+                  <filter x="-.7%" y="-.5%" width="101.4%" height="102%" filterUnits="objectBoundingBox" id="mc-content-unknown-large-a">
+                      <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                      <feColorMatrix values="0 0 0 0 0.858823529 0 0 0 0 0.870588235 0 0 0 0 0.88627451 0 0 0 1 0" in="shadowOffsetOuter1"></feColorMatrix>
+                  </filter>
+              </defs>
+              <g fill="none" fill-rule="evenodd">
+                  <g>
+                      <use fill="#000" filter="url(#mc-content-unknown-large-a)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mc-content-unknown-large-b"></use>
+                      <use fill="#F7F9FA" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mc-content-unknown-large-b"></use>
+                  </g>
+              </g>
+          </svg> 
+         `      
     }
   }
 
-  getFileView(file){
-    return `
+  getFileView(file,key){
+    let li = document.createElement('li');
+    li.dataset.key = key;    
+    li.innerHTML = `
         <li>
           ${this.getFileIconView(file)}
           <div class="name text-center">${file.name}</div>
         </li>
     `;
+    return li;
+  }
+
+  readFiles(){
+    this.getFirebaseRef().on('value',snapshot =>{
+      this.listFilesEl.innerHTML = '';
+      snapshot.forEach(snapshotItem =>{
+        let key  = snapshotItem.key;
+        let data = snapshotItem.val();
+
+        console.log(key,data);
+        this.listFilesEl.appendChild(this.getFileView(data,key))
+      })
+    })
   }
 }
